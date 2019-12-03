@@ -11,11 +11,13 @@ import cv2
 videoFile = 0  # change to 0 for camera input
   
 # capture frames from a video
-cap = cv2.VideoCapture(vicocdeoFile)
+cap = cv2.VideoCapture(videoFile)
   
 # Trained XML classifiers describes some features of some object we want to detect 
 car_cascade = cv2.CascadeClassifier('cars.xml') 
-  
+
+frameCtr = 0
+
 # loop runs if capturing has been initialized. 
 while True:
     # reads frames from a video 
@@ -30,6 +32,15 @@ while True:
     # To draw a rectangle in each cars
     for (x, y, w, h) in cars:
         cv2.rectangle(frames, (x, y), (x + w, y + h), (0, 0, 255), 2)
+
+    if len(cars):
+        frameCtr += 1
+    else:
+        frameCtr = 0
+    if frameCtr >= 8:
+        cv2.putText(frames, 'Found a Car', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 255),2)
+    else:
+        cv2.putText(frames, 'Safe to Cross', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0),2)
 
     # Display frames in a window
     cv2.imshow('video2', frames)
