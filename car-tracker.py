@@ -7,16 +7,15 @@ Sources
 # OpenCV Python program to detect cars in video frame
 # import libraries of python OpenCV
 
-# from gtts import gTTS
-# import os
+from gtts import gTTS
+import os
 import cv2
 import pyttsx3
+import threading
 
 ttsEngine = pyttsx3.init()  # object creation
 
-language = 'en'
-
-videoFile = 'video.avi'  # change to 0 for camera input
+videoFile = 0  # change to 0 for camera input
 
 # capture frames from a video
 cap = cv2.VideoCapture(videoFile)
@@ -25,6 +24,10 @@ cap = cv2.VideoCapture(videoFile)
 car_cascade = cv2.CascadeClassifier('cars.xml')
 
 frameCtr = 0
+
+def speak(text):
+    ttsEngine.say(text)
+    ttsEngine.runAndWait()
 
 # loop runs if capturing has been initialized.
 while True:
@@ -45,15 +48,20 @@ while True:
         frameCtr += 1
     else:
         frameCtr = 0
+    currThread = threading.Thread(target=speak,args=('Do not cross',))
+
+    # if 8 consecutive frames with a car found, announce Found a Car; otherwise announce Safe to Cross
     if frameCtr >= 8:
-        cv2.putText(frames, 'Found a Car', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 255),2)
-        ttsEngine.say("Do not cross")
-        ttsEngine.runAndWait()
+        cv2.putText(frames, 'Found a Car', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 0, 255), 2)
+        if not currThread.isAlive():
+            currThread = threading.Thread(target=speak, args=('Do not cross',))
+            currThread.start()
         # ttsEngine.stop()
     else:
-        cv2.putText(frames, 'Safe to Cross', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0),2)
-        ttsEngine.say("Safe to cross")
-        ttsEngine.runAndWait()
+        cv2.putText(frames, 'Safe to Cross', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
+        if not currThread.isAlive():
+            currThread = threading.Thread(target=speak, args=('Safe to cross',))
+            currThread.start()
         # ttsEngine.stop()
 
     # Display frames in a window
