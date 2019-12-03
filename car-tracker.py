@@ -13,8 +13,6 @@ import cv2
 import pyttsx3
 import threading
 
-ttsEngine = pyttsx3.init()  # object creation
-
 videoFile = 0  # change to 0 for camera input
 
 # capture frames from a video
@@ -25,9 +23,13 @@ car_cascade = cv2.CascadeClassifier('cars.xml')
 
 frameCtr = 0
 
+ttsEngine = pyttsx3.init()  # object creation
+
 def speak(text):
     ttsEngine.say(text)
     ttsEngine.runAndWait()
+
+currThread = threading.Thread(target=speak, args=('Do not cross',))
 
 # loop runs if capturing has been initialized.
 while True:
@@ -48,7 +50,6 @@ while True:
         frameCtr += 1
     else:
         frameCtr = 0
-    currThread = threading.Thread(target=speak,args=('Do not cross',))
 
     # if 8 consecutive frames with a car found, announce Found a Car; otherwise announce Safe to Cross
     if frameCtr >= 8:
@@ -56,13 +57,11 @@ while True:
         if not currThread.isAlive():
             currThread = threading.Thread(target=speak, args=('Do not cross',))
             currThread.start()
-        # ttsEngine.stop()
     else:
         cv2.putText(frames, 'Safe to Cross', (20, 30), cv2.FONT_HERSHEY_PLAIN, 2, (0, 255, 0), 2)
         if not currThread.isAlive():
             currThread = threading.Thread(target=speak, args=('Safe to cross',))
             currThread.start()
-        # ttsEngine.stop()
 
     # Display frames in a window
     cv2.imshow('video2', frames)
