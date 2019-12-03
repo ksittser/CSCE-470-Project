@@ -7,26 +7,14 @@ Sources
 # OpenCV Python program to detect cars in video frame
 # import libraries of python OpenCV
 
-from gtts import gTTS
-import os
+# from gtts import gTTS
+# import os
 import cv2
 import pyttsx3
 
 ttsEngine = pyttsx3.init()  # object creation
 
-
 language = 'en'
-unsafe = 'Found a car. Do not cross'
-doNotCross = gTTS(text=unsafe, lang=language, slow=False)
-doNotCross.save("doNotCross.mp3")
-
-safe = 'No cars seen. Cross carefully.'
-cross = gTTS(text=safe, lang=language, slow=False)
-cross.save("cross.mp3")
-
-error = 'ERROR: Do not cross and try again.'
-errorMessage = gTTS(text=error, lang=language, slow=False)
-errorMessage.save("errorMessage.mp3")
 
 videoFile = 'video.avi'  # change to 0 for camera input
 
