@@ -40,7 +40,7 @@ while True:
     gray = cv2.cvtColor(frames, cv2.COLOR_BGR2GRAY)
 
     # Detects cars of different sizes in the input image
-    cars = car_cascade.detectMultiScale(gray, 1.1, 1)
+    cars = car_cascade.detectMultiScale(gray, 1.2, 3)
 
     # To draw a rectangle in each cars
     for (x, y, w, h) in cars:
